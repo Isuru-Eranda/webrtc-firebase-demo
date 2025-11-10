@@ -57,26 +57,57 @@
       .status-active { color: #0f0; }
       .status-idle { color: #888; }
       button, input {
-        padding: 8px 12px;
+        padding: 10px 14px;
         margin: 5px;
         font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        background: white;
+      }
+      button:hover:not(:disabled) {
+        background: #e0e0e0;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      h2 { margin-top: 20px; color: #333; }
+      .section {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .peers-list {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 10px 0;
+      }
+      .peer-item {
+        background: #f9f9f9;
+        padding: 10px;
+        margin: 5px 0;
+        border-left: 4px solid #4CAF50;
+        border-radius: 3px;
+      }
+      .peer-item.offline {
+        border-left-color: #ccc;
+        opacity: 0.6;
       }
       input[type="text"] {
         padding: 10px;
         width: 300px;
         max-width: 100%;
       }
-      button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-      h2 { margin-top: 20px; }
-      .audio-section {
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
+      .room-info {
+        background: #e8f5e9;
+        padding: 10px;
+        border-radius: 4px;
         margin: 10px 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid #4CAF50;
       }
     </style>
   </head>
@@ -85,14 +116,14 @@
       <div class="main">
         <h1>🎙️ WebRTC Multi-Peer Audio Conference</h1>
 
-        <div class="audio-section">
+        <div class="section">
           <h2>1. Start Your Microphone</h2>
           <button id="webcamButton">Start Audio Input</button>
-          <p id="streamStatus" class="status-idle">❌ Status: Microphone OFF</p>
+          <p id="streamStatus" class="status-idle">Status: Microphone off</p>
           <audio id="webcamVideo" autoplay muted style="display: none;"></audio>
         </div>
 
-        <div class="audio-section">
+        <div class="section">
           <h2>2. Join a Conference Room</h2>
           <p>Share this Room ID with others to join the same conference:</p>
           <input id="callInput" placeholder="Room ID (e.g., conference-1)" />
@@ -101,7 +132,7 @@
           <div id="roomInfo" style="display: none;"></div>
         </div>
 
-        <div class="audio-section">
+        <div class="peers-list">
           <h3>👥 Connected Peers</h3>
           <div id="peersList">
             <p class="status-idle">Not connected to any room</p>
@@ -117,6 +148,15 @@
             <li>All audio streams are automatically mixed and heard by everyone</li>
             <li>Click "Leave Room" to disconnect</li>
           </ol>
+        </div>
+
+        <div style="background: #f0f0f0; padding: 15px; border-radius: 4px; margin-top: 20px; font-size: 12px;">
+          <strong>📋 Limitations:</strong>
+          <ul>
+            <li>Audio is mixed automatically (browser default). For SFU setup, see advanced config.</li>
+            <li>Max ~5 peers recommended on same LAN without additional TURN servers</li>
+            <li>Each peer connection uses bidirectional audio (P2P mesh topology)</li>
+          </ul>
         </div>
       </div>
 
@@ -148,6 +188,13 @@
           <div class="debug-row">
             <span class="debug-label">Room ID:</span>
             <span class="debug-value" id="dbg-callid">-</span>
+          </div>
+        </div>
+
+        <div class="debug-section">
+          <strong>Console Output</strong>
+          <div id="consoleOutput" style="max-height: 300px; overflow-y: auto; background: #000; padding: 5px; border-radius: 3px; font-size: 10px;">
+            <div style="color: #0f0;">Ready for connection...</div>
           </div>
         </div>
       </div>
